@@ -65,24 +65,27 @@ const EXPECTED_SECTION_IDS: Record<TestType, string[]> = {
 
 const PAPER4_AI_TURNS = [
   {
-    name: "Alicia",
-    role: "AI speaker 1",
+    name: "Claude",
+    role: "AI classmate · Anthropic",
+    provider: "Claude",
     color: "bg-sky-500",
     pitch: 1.08,
     rate: 0.95,
     text: "To start, I think people dislike photo-taking when it disturbs their daily life. The Vermont example is not only about cameras, but also parking near private homes and arguing with residents. In Hong Kong, I can imagine similar problems in crowded neighbourhoods.",
   },
   {
-    name: "Marcus",
-    role: "AI speaker 2",
+    name: "Gemini",
+    role: "AI classmate · Google",
+    provider: "Google",
     color: "bg-emerald-500",
     pitch: 0.82,
     rate: 0.9,
     text: "I agree. Some places become popular because of social media, and then residents have to deal with noise, rubbish and blocked pavements. I think areas like the harbourfront, Central streets with old buildings, and famous housing estates can attract too many visitors at the same time.",
   },
   {
-    name: "Sophia",
-    role: "AI speaker 3",
+    name: "Kimi",
+    role: "AI classmate · Moonshot",
+    provider: "Kimi",
     color: "bg-violet-500",
     pitch: 1.18,
     rate: 0.92,
@@ -926,7 +929,12 @@ function HkdsePaper4Runner({
                         {turn.name[0]}
                       </span>
                       <div>
-                        <p className="font-medium text-foreground">{turn.name}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium text-foreground">{turn.name}</p>
+                          <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+                            AI
+                          </span>
+                        </div>
                         <p className="text-xs text-muted-foreground">{turn.role}</p>
                       </div>
                     </div>
@@ -950,7 +958,12 @@ function HkdsePaper4Runner({
                         <UserRound className="h-5 w-5" />
                       </span>
                       <div>
-                        <p className="font-medium text-foreground">Student response</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium text-foreground">You</p>
+                          <span className="rounded bg-primary/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+                            Human
+                          </span>
+                        </div>
                         <p className="text-xs text-muted-foreground">
                           {recording
                             ? `Recording ${timer}`
@@ -1435,9 +1448,17 @@ function TestRunner({
 
 function ListeningAudioConsole({ script, audioUrl }: { script: string; audioUrl?: string }) {
   const [useTts, setUseTts] = useState(!audioUrl);
+  const { t } = useTranslation();
 
   if (useTts) {
-    return <ListeningTtsConsole script={script} />;
+    return (
+      <div className="space-y-3">
+        <p className="rounded-md border border-amber-200/60 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-100">
+          {t("parent.test.listeningTtsFallback")}
+        </p>
+        <ListeningTtsConsole script={script} />
+      </div>
+    );
   }
 
   return <ListeningHtmlAudioConsole audioUrl={audioUrl!} onFallback={() => setUseTts(true)} />;

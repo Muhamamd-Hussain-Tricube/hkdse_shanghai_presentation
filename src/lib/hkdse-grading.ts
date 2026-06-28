@@ -207,6 +207,7 @@ function gradeSpeakingSection(section: Section, answersByQ: Map<string, AnswerRe
       overall_score: total,
       group_score: perQuestion.S1?.score ?? 0,
       individual_score: perQuestion.S2?.score ?? 0,
+      duration_label: total > 0 ? "Recorded ~6:40" : undefined,
       group_transcript: String(answersByQ.get("S1")?.value ?? ""),
       individual_transcript: String(answersByQ.get("S2")?.value ?? ""),
       criteria: [
@@ -214,27 +215,64 @@ function gradeSpeakingSection(section: Section, answersByQ: Map<string, AnswerRe
           name: "Pronunciation & delivery",
           band,
           score: band,
-          feedback: "Pace and clarity support communication. Occasional hesitation on longer turns.",
+          feedback:
+            band >= 5
+              ? "Voice projection and pacing are confident. Sounds and word clusters are clear, with only occasional hesitation when extending longer points."
+              : "Pace and clarity support communication. Occasional hesitation on longer turns.",
         },
         {
           name: "Communication strategies",
           band,
           score: band,
-          feedback: "Uses agreeing, qualifying and building on points. Invite others more directly for Band 7.",
+          feedback:
+            band >= 5
+              ? "Uses a full range of strategies effectively: agreeing, qualifying, building on others' points, and bringing the group towards a balanced conclusion."
+              : "Uses agreeing, qualifying and building on points. Invite others more directly for Band 7.",
         },
         {
           name: "Vocabulary & language patterns",
           band,
           score: band,
-          feedback: "Appropriate vocabulary for the topic with generally accurate patterns.",
+          feedback:
+            band >= 5
+              ? "Wide and accurate vocabulary for the topic, including privacy, crowd control, local residents, atmosphere, and respectful behaviour."
+              : "Appropriate vocabulary for the topic with generally accurate patterns.",
         },
         {
           name: "Ideas & organization",
           band,
           score: band,
-          feedback: "Ideas are relevant and logically linked within each response.",
+          feedback:
+            band >= 5
+              ? "Ideas are well developed, relevant and clearly linked. The response balances tourist enjoyment, business needs, privacy and practical regulation."
+              : "Ideas are relevant and logically linked within each response.",
         },
       ],
+      strengths:
+        band >= 5
+          ? [
+              "Clear thesis: the issue is behaviour, not photography itself.",
+              "Strong local examples: Monster Building, harbourfront, old cafes and restaurant rules.",
+              "Balanced judgement: supports tourism while protecting residents and private businesses.",
+            ]
+          : total > 0
+            ? ["Participated in group discussion and individual response tasks."]
+            : [],
+      focus_next:
+        band >= 5
+          ? [
+              "Invite classmates directly once or twice during group interaction.",
+              "Add one brief concession before the conclusion to sound more interactive.",
+            ]
+          : total > 0
+            ? ["Invite other speakers explicitly during group interaction."]
+            : ["Complete both Part A group interaction and Part B individual responses."],
+      examiner_feedback:
+        total === 0
+          ? "No speaking response was recorded. Paper 4 requires participation in both group discussion and individual follow-up questions."
+          : band >= 5
+            ? "This was a strong Paper 4 performance with relevant Hong Kong examples, balanced judgement and clear individual answers."
+            : "Limited speaking performance. Extend answers with examples, clearer structure and more explicit interaction with group members.",
     },
   };
 }

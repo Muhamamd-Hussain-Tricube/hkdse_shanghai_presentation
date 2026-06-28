@@ -110,6 +110,8 @@ function enrollmentRowsForRound(data: StoreData, roundId: string) {
             component_scores: e.session.component_scores,
             bands: e.session.bands,
             overall_band: e.session.overall_band,
+            section_scores: e.session.section_scores,
+            result_summary: e.session.result_summary,
           }
         : null,
     }));
@@ -266,6 +268,8 @@ export function useClassLocalStore(organizationId: string | null) {
                 component_scores: e.session.component_scores,
                 bands: e.session.bands,
                 overall_band: e.session.overall_band,
+                section_scores: e.session.section_scores,
+                result_summary: e.session.result_summary,
               }
             : null,
         })),
@@ -399,22 +403,27 @@ export function useClassLocalStore(organizationId: string | null) {
           };
         });
 
+        const seedCount = Math.max(1, Math.floor(newEnrollments.length * 0.35));
+        const seededEnrollments = newEnrollments.map((e, i) =>
+          i < seedCount ? completeEnrollment(e, newRound) : e,
+        );
+
         const stats = aggregateClassStats(
-          newEnrollments.map((e) => ({
+          seededEnrollments.map((e) => ({
             id: e.id,
             student_name: e.student_name,
             email: e.email,
             grade: e.grade,
             hkdse_papers: e.hkdse_papers,
             status: e.status,
-            session: null,
+            session: e.session,
           })),
         );
 
         const next = {
           ...prev,
           rounds: [...prev.rounds, newRound],
-          enrollments: [...prev.enrollments, ...newEnrollments],
+          enrollments: [...prev.enrollments, ...seededEnrollments],
         };
         pushHistory(next, classId, buildHistoryPoint(nextNumber, label, t, stats));
 
@@ -519,6 +528,79 @@ export function useClassLocalStore(organizationId: string | null) {
     [data],
   );
 
+  const getRoundComparison = useCallback(
+    (classId: string) => {
+      const rounds = data.rounds
+        .filter((r) => r.class_id === classId)
+        .sort((a, b) => a.round_number - b.round_number);
+      const round1 = rounds.find((r) => r.round_number === 1);
+      const round2 = rounds.find((r) => r.round_number >= 2);
+      if (!round1) return null;
+
+      const r1Data = enrollmentRowsForRound(data, round1.id);
+      const r1Stats = aggregateClassStats(r1Data);
+
+      let round2Stats: ClassStatsSnapshot | null = null;
+      let round2Round: LocalRound | null = null;
+      if (round2) {
+        round2Round = round2;
+        round2Stats = aggregateClassStats(enrollmentRowsForRound(data, round2.id));
+      }
+
+      const r1ByEmail = new Map(
+        r1Stats.enrollments
+          .filter((e) => e.status === "completed")
+          .map((e) => [e.email.toLowerCase(), e]),
+      );
+      const r2ByEmail = round2Stats
+        ? new Map(
+            round2Stats.enrollments
+              .filter((e) => e.status === "completed")
+              .map((e) => [e.email.toLowerCase(), e]),
+          )
+        : new Map();
+
+      const studentRows = Array.from(r1ByEmail.entries()).map(([email, r1]) => {
+        const r2 = r2ByEmail.get(email);
+        const r1Pct = r1.overall_pct;
+        const r2Pct = r2?.overall_pct ?? null;
+        const delta = r1Pct != null && r2Pct != null ? r2Pct - r1Pct : null;
+        return {
+          student_name: r1.student_name,
+          email: r1.email,
+          r1_pct: r1Pct,
+          r1_band: r1.overall_band,
+          r2_pct: r2Pct,
+          r2_band: r2?.overall_band ?? null,
+          delta,
+        };
+      });
+
+      studentRows.sort((a, b) => (b.delta ?? -999) - (a.delta ?? -999));
+
+      return {
+        round1: { round: round1, stats: r1Stats },
+        round2: round2Round && round2Stats ? { round: round2Round, stats: round2Stats } : null,
+        students: studentRows,
+      };
+    },
+    [data],
+  );
+
+  const updateEnrollmentPapers = useCallback(
+    (enrollmentId: string, papers: HkdsePaperId[]) => {
+      setData((prev) => ({
+        ...prev,
+        enrollments: prev.enrollments.map((e) =>
+          e.id === enrollmentId && e.status === "pending"
+            ? { ...e, hkdse_papers: papers.length > 0 ? papers : [...ALL_PAPERS] }
+            : e,
+        ),
+      }));
+    },
+    [],
+  );
+
   return {
     listClasses,
     createClass,
@@ -527,6 +609,8 @@ export function useClassLocalStore(organizationId: string | null) {
     uploadTargetedRound,
     startRemindSimulation,
     exportTargetedPracticeCsv,
+    getRoundComparison,
+    updateEnrollmentPapers,
   };
 }
 

@@ -235,6 +235,17 @@ export function ensureDemoClassSeed(orgId: string = DEMO_IDS.org) {
   store.historyByClass[classId] = [buildHistoryPoint(1, "Initial assessment", t, stats)];
 
   localStorage.setItem(CLASS_STORAGE_KEY, JSON.stringify(store));
+
+  if (!store.classes.some((c) => c.organization_id === orgId && c.name === "English for Form Six")) {
+    store.classes.push({
+      id: uid("class"),
+      organization_id: orgId,
+      name: "English for Form Six",
+      grade_label: "Form 6",
+      created_at: t,
+    });
+    localStorage.setItem(CLASS_STORAGE_KEY, JSON.stringify(store));
+  }
 }
 
 function repairDemoAccounts(data: LocalStoreData): LocalStoreData {

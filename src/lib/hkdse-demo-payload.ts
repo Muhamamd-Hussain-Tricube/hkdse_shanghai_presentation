@@ -1,3 +1,13 @@
+import { percentageToStars, formatStars } from "./hkdse-stars";
+
+export { percentageToStars, formatStars };
+
+const DEMO_W1_EMAIL =
+  "Dear students,\n\nI am writing to explain our new quiet study room, which will open after lessons from next Monday. The room is on the second floor near the library. It is for silent revision only — no food, no phone calls and no group chatting.\n\nTo book a seat, use the student portal before 4 p.m. on the day you need it. Each session lasts forty-five minutes. Please leave the room tidy and switch off the lights when you finish.\n\nUse the room responsibly so everyone can focus. If we respect the rules together, the study room will help us prepare for the HKDSE more effectively.\n\nChris Wong\nChairperson, Student Union";
+
+const DEMO_W2_ESSAY =
+  "Homework should be redesigned rather than simply reduced. Many students already feel overloaded, but cutting homework without changing its purpose may weaken learning habits. A better approach is to assign tasks that connect classroom ideas to real life.\n\nFor example, instead of repeating grammar drills, teachers could ask students to interview a family member about a local issue and write a short reflection. Such tasks develop research skills, critical thinking and communication. They also feel more meaningful than copying notes.\n\nRedesign does not mean making school easier. It means making work purposeful. When homework helps students practise skills they will need in society, families are more likely to support it.\n\nSchools should therefore review homework policies regularly. Teachers, students and parents should discuss what kinds of tasks truly support learning. Redesign, not reduction, is the sustainable way to improve homework in Hong Kong.";
+
 /** Map raw percentage to an approximate HKDSE English level for practice reporting. */
 export function percentageToBand(pct: number): string {
   if (pct >= 88) return "5**";
@@ -142,6 +152,7 @@ The centre now records reflection notes instead of only counting attendance. Stu
             type: "short_text",
             rubric:
               "Award marks for clear purpose, relevant details, appropriate email format, polite tone and accurate language.",
+            answer: DEMO_W1_EMAIL,
           },
           {
             id: "W2",
@@ -157,6 +168,7 @@ The centre now records reflection notes instead of only counting attendance. Stu
             ],
             rubric:
               "Award marks for content development, organisation, audience awareness, vocabulary range, grammar accuracy and register.",
+            answer: DEMO_W2_ESSAY,
           },
         ],
       },

@@ -11,6 +11,8 @@ import {
 } from "@/components/class/ClassStudentReviewDialog";
 import { ClassStatCards } from "@/components/class/ClassStatCards";
 import { ClassScoreChart, type HistoryPoint } from "@/components/class/ClassScoreChart";
+import { ClassRoundCompare } from "@/components/class/ClassRoundCompare";
+import { ClassPaperEditor } from "@/components/class/ClassPaperEditor";
 import { CsvUploadZone } from "@/components/class/CsvUploadZone";
 import { HKDSE_PAPER_META, type HkdsePaperId } from "@/lib/hkdse-paper-meta";
 import { parseRosterCsv, parseTargetedCsv } from "@/lib/class-csv";
@@ -24,7 +26,7 @@ export const Route = createFileRoute("/dashboard/classes/$classId")({
   component: ClassDetailPage,
 });
 
-type Tab = "roster" | "progress" | "analytics" | "history";
+type Tab = "roster" | "progress" | "analytics" | "history" | "compare";
 
 const bandChartConfig = {
   count: { label: "Students", color: "oklch(0.27 0.06 255)" },
@@ -60,6 +62,8 @@ export function ClassDetailPageInner({
     uploadTargetedRound,
     startRemindSimulation,
     exportTargetedPracticeCsv,
+    getRoundComparison,
+    updateEnrollmentPapers,
   } = useClassLocalStore(orgId);
 
   const [tab, setTab] = useState<Tab>("roster");
@@ -237,17 +241,43 @@ export function ClassDetailPageInner({
     );
   }
 
+  const comparison = useMemo(() => getRoundComparison(classId), [getRoundComparison, classId]);
+
+  const round1 = dashboard.rounds?.find((r) => r.round_number === 1);
+  const round1Enrollments = useMemo(() => {
+    if (!round1) return [];
+    return getClassDashboard(classId, round1.id)?.enrollments ?? [];
+  }, [round1, classId, getClassDashboard]);
+  const canStartRound2 =
+    round1 && stats && stats.completed_count >= 1 && dashboard.rounds.length === 1;
+  const canExport = Boolean(activeRound && stats && stats.completed_count > 0);
+
   const tabs: { id: Tab; label: string }[] = [
     { id: "roster", label: t("classes.tabRoster") },
     { id: "progress", label: t("classes.tabProgress") },
     { id: "analytics", label: t("classes.tabAnalytics") },
+    { id: "compare", label: t("classes.tabCompare") },
     { id: "history", label: t("classes.tabHistory") },
   ];
 
-  const canExport =
-    activeRound && stats && stats.completed_count > 0
-      ? exportTargetedPracticeCsv(classId, activeRound.id)
-      : null;
+  const round2UploadBlock =
+    canStartRound2 ? (
+      <div className="rounded-lg border border-border bg-primary-muted/30 p-5">
+        <h3 className="font-display text-lg text-foreground">{t("classes.round2Title")}</h3>
+        <p className="mt-1 text-sm text-muted-foreground">{t("classes.round2Hint")}</p>
+        <p className="mt-2 text-xs text-muted-foreground">{t("classes.round2ReuploadHint")}</p>
+        <div className="mt-4">
+          <CsvUploadZone hint={t("classes.round2CsvHint")} onFileParsed={handleTargetedCsv} />
+          {targetedRawRows && (
+            <Button className="mt-4" onClick={handleDispatch} disabled={dispatching}>
+              {dispatching
+                ? t("classes.dispatching")
+                : t("classes.dispatchRound2", { count: targetedRawRows.length })}
+            </Button>
+          )}
+        </div>
+      </div>
+    ) : null;
 
   return (
     <div className="space-y-6">
@@ -338,6 +368,12 @@ export function ClassDetailPageInner({
               <Button className="mt-4" variant="outline" onClick={() => setTab("progress")}>
                 {t("classes.viewProgress")}
               </Button>
+              {round1 && (
+                <ClassPaperEditor
+                  enrollments={round1Enrollments}
+                  onUpdatePapers={(id, papers) => updateEnrollmentPapers(id, papers)}
+                />
+              )}
             </div>
           )}
         </div>
@@ -453,33 +489,13 @@ export function ClassDetailPageInner({
                   {t("classes.exportTargeted")}
                 </Button>
               </div>
-              {activeRound &&
-                activeRound.round_number === 1 &&
-                stats.completed_count >= stats.total_count && (
-                  <div className="rounded-lg border border-border bg-primary-muted/30 p-5">
-                    <h3 className="font-display text-lg text-foreground">
-                      {t("classes.round2Title")}
-                    </h3>
-                    <p className="mt-1 text-sm text-muted-foreground">{t("classes.round2Hint")}</p>
-                    <div className="mt-4">
-                      <CsvUploadZone
-                        hint={t("classes.round2CsvHint")}
-                        onFileParsed={handleTargetedCsv}
-                      />
-                      {targetedRawRows && (
-                        <Button className="mt-4" onClick={handleDispatch} disabled={dispatching}>
-                          {dispatching
-                            ? t("classes.dispatching")
-                            : t("classes.dispatchRound2", { count: targetedRawRows.length })}
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                )}
+              {round2UploadBlock}
             </>
           )}
         </div>
       )}
+
+      {tab === "compare" && <ClassRoundCompare comparison={comparison} />}
 
       {tab === "history" && (
         <div className="space-y-6">
@@ -489,6 +505,7 @@ export function ClassDetailPageInner({
               <ClassScoreChart history={(dashboard.history ?? []) as HistoryPoint[]} />
             </div>
           </div>
+          {round2UploadBlock}
           {dashboard.rounds.map((r) => {
             const hp = (dashboard.history ?? []).find((h) => h.round_number === r.round_number);
             if (!hp) return null;

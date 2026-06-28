@@ -299,6 +299,8 @@ export const en = {
       postReportBody:
         "Your aptitude results are part of your published advisory report. Open the report to see scores and recommendations together.",
       viewAdvisoryReport: "View advisory report",
+      listeningTtsFallback:
+        "Recorded audio is unavailable offline — the listening script will be read aloud using your device speaker (works without internet after page load).",
       failedTitle: "Grading hit a snag",
       failedBodyPrefix: "Something went wrong while grading your test",
       failedBodySuffix: "Please contact your advisor — they'll be able to retry it.",
@@ -477,6 +479,7 @@ export const en = {
     },
     results: {
       ieltsTitle: "HKDSE English practice results",
+      noGradedSession: "No graded HKDSE English practice yet. Complete and submit your test first.",
       curriculumTitle: "Curriculum pathway recommendation",
       notReady: "Results are not ready yet.",
       overallBand: "Predicted HKDSE English level",
@@ -579,6 +582,7 @@ export const en = {
     tabRoster: "Roster & dispatch",
     tabProgress: "Live progress",
     tabAnalytics: "Analytics",
+    tabCompare: "Compare rounds",
     tabHistory: "History",
     csvHint: "Drag and drop a CSV file, or choose one. Columns: name, email, grade, papers",
     downloadSample: "Download sample CSV",
@@ -602,6 +606,8 @@ export const en = {
     exportSuccess: "Targeted practice CSV downloaded",
     round2Title: "Upload Round 2 — targeted practice",
     round2Hint: "Upload the exported CSV to assign personalised paper practice to each student.",
+    round2ReuploadHint:
+      "Demo flow: export targeted practice CSV below, then re-upload the same file here to start Round 2.",
     round2CsvHint: "Upload targeted practice CSV (with targeted_paper and attempts columns)",
     dispatchRound2: "Dispatch Round 2 to {{count}} students",
     round2Success: "Round 2 dispatched to {{count}} students",
@@ -611,5 +617,15 @@ export const en = {
     backToDashboard: "Back to dashboard",
     downloadSample30: "Download 30-student demo roster",
     clickStudentReview: "Click a completed student to review their marks",
+    compareEmpty: "Upload a roster to compare assessment rounds.",
+    compareNeedRound2: "Upload Round 2 targeted practice CSV to compare rounds side by side.",
+    compareDelta: "Class improvement (Round 2 vs Round 1)",
+    compareStudents: "Student comparison",
+    compareColName: "Student",
+    compareColR1: "Round 1",
+    compareColR2: "Round 2",
+    compareColDelta: "Change",
+    paperEditorTitle: "Assign papers per student",
+    paperEditorHint: "Toggle HKDSE papers for students who have not started yet (before reminders).",
   },
 } as const;
