@@ -1,0 +1,194 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Pathway Advisory — Education advisory platform design system
+ * Calm, professional, trust-inspiring. Warm neutrals + deep ink primary.
+ */
+
+@theme inline {
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-muted: var(--primary-muted);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+
+  --shadow-soft: 0 1px 2px 0 oklch(0.2 0.02 250 / 0.04), 0 1px 3px 0 oklch(0.2 0.02 250 / 0.06);
+  --shadow-card: 0 1px 3px 0 oklch(0.2 0.02 250 / 0.05), 0 4px 12px -2px oklch(0.2 0.02 250 / 0.08);
+  --shadow-elevated:
+    0 8px 24px -8px oklch(0.2 0.02 250 / 0.18), 0 2px 6px 0 oklch(0.2 0.02 250 / 0.06);
+}
+
+:root {
+  --radius: 0.625rem;
+
+  /* Warm paper background */
+  --background: oklch(0.985 0.005 80);
+  --foreground: oklch(0.18 0.02 250);
+
+  --surface: oklch(1 0 0);
+  --surface-foreground: oklch(0.18 0.02 250);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.02 250);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.02 250);
+
+  /* Deep ink navy — academic, trustworthy */
+  --primary: oklch(0.27 0.06 255);
+  --primary-foreground: oklch(0.985 0.005 80);
+  --primary-muted: oklch(0.92 0.02 255);
+
+  /* Warm amber accent — encouraging, optimistic */
+  --accent: oklch(0.78 0.13 65);
+  --accent-foreground: oklch(0.22 0.04 60);
+
+  --secondary: oklch(0.96 0.01 80);
+  --secondary-foreground: oklch(0.22 0.03 250);
+
+  --muted: oklch(0.95 0.008 80);
+  --muted-foreground: oklch(0.48 0.02 250);
+
+  --success: oklch(0.62 0.13 155);
+  --success-foreground: oklch(0.99 0.01 155);
+
+  --warning: oklch(0.78 0.14 75);
+  --warning-foreground: oklch(0.25 0.04 75);
+
+  --destructive: oklch(0.58 0.21 27);
+  --destructive-foreground: oklch(0.99 0.01 27);
+
+  --border: oklch(0.9 0.01 80);
+  --input: oklch(0.92 0.01 80);
+  --ring: oklch(0.5 0.08 255);
+
+  --chart-1: oklch(0.55 0.15 255);
+  --chart-2: oklch(0.7 0.13 65);
+  --chart-3: oklch(0.62 0.13 155);
+  --chart-4: oklch(0.6 0.18 25);
+  --chart-5: oklch(0.45 0.1 295);
+
+  --sidebar: oklch(0.97 0.008 80);
+  --sidebar-foreground: oklch(0.22 0.03 250);
+  --sidebar-primary: oklch(0.27 0.06 255);
+  --sidebar-primary-foreground: oklch(0.985 0.005 80);
+  --sidebar-accent: oklch(0.93 0.015 80);
+  --sidebar-accent-foreground: oklch(0.22 0.03 250);
+  --sidebar-border: oklch(0.9 0.01 80);
+  --sidebar-ring: oklch(0.5 0.08 255);
+}
+
+.dark {
+  --background: oklch(0.16 0.02 255);
+  --foreground: oklch(0.96 0.005 80);
+  --surface: oklch(0.21 0.025 255);
+  --surface-foreground: oklch(0.96 0.005 80);
+  --card: oklch(0.21 0.025 255);
+  --card-foreground: oklch(0.96 0.005 80);
+  --popover: oklch(0.21 0.025 255);
+  --popover-foreground: oklch(0.96 0.005 80);
+  --primary: oklch(0.85 0.03 255);
+  --primary-foreground: oklch(0.18 0.03 255);
+  --primary-muted: oklch(0.3 0.04 255);
+  --secondary: oklch(0.27 0.03 255);
+  --secondary-foreground: oklch(0.96 0.005 80);
+  --muted: oklch(0.27 0.03 255);
+  --muted-foreground: oklch(0.7 0.02 80);
+  --accent: oklch(0.78 0.13 65);
+  --accent-foreground: oklch(0.18 0.03 255);
+  --success: oklch(0.7 0.14 155);
+  --success-foreground: oklch(0.16 0.02 155);
+  --warning: oklch(0.82 0.14 75);
+  --warning-foreground: oklch(0.2 0.04 75);
+  --destructive: oklch(0.65 0.2 27);
+  --destructive-foreground: oklch(0.99 0.01 27);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.65 0.08 255);
+  --sidebar: oklch(0.18 0.02 255);
+  --sidebar-foreground: oklch(0.96 0.005 80);
+  --sidebar-primary: oklch(0.85 0.03 255);
+  --sidebar-primary-foreground: oklch(0.18 0.03 255);
+  --sidebar-accent: oklch(0.27 0.03 255);
+  --sidebar-accent-foreground: oklch(0.96 0.005 80);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.65 0.08 255);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    font-weight: 500;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+}

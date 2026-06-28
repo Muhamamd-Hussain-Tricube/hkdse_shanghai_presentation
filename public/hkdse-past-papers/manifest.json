@@ -1,0 +1,10 @@
+{
+  "source_url": "https://dsesource.com/hkdse-english-pp/",
+  "audio_by_year": {
+    "2025": "/hkdse-past-papers/2025/paper-3-audio.mp3"
+  },
+  "gaps": [
+    "2012-2024: no Paper 3 audio URLs on dsesource; TTS fallback used",
+    "2025: PDF links missing on source page"
+  ]
+}
